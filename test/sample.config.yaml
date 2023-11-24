@@ -1,0 +1,6 @@
+auth_token : "<auth_token here>"
+model_name : "meta-llama/Llama-2-7b-chat-hf"
+#model_name : "beomi/KoAlpaca-Polyglot-12.8B"
+#model_name : "beomi/KoAlpaca-Polyglot-5.8B"
+#model_name : "beomi/KoAlpaca-Polyglot-5.8B"
+#model_name : "beomi/KoAlpaca-Polyglot-5.8B"

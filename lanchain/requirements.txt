@@ -1,0 +1,14 @@
+langchain
+openai
+pypdf
+PyPDF2
+tiktoken
+pinecone-client
+optimum
+python-dotenv
+cchardet
+chromadb
+Flask
+ctransformers
+bitsandbytes
+scipy
