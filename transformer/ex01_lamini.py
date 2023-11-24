@@ -33,7 +33,12 @@ pipe = pipeline('text2text-generation',
                  )
 #%%
 def get_prompt(instruction):
-    prompt_template = f"Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{instruction}\n\n### Response:"
+    prompt_template = f"""
+    Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n
+    ### Instruction:\n
+    # {instruction}\n\n
+    # ### Response:
+    """
     return prompt_template
 
 def parse_text(data):
@@ -46,7 +51,7 @@ def parse_text(data):
 # %%time
 start_time = time.time()
 gen_txt = pipe(
-    get_prompt("What are the differences between alpacas, vicunas and llamas?"), 
+    get_prompt("What is the meaning of life?"), 
     #  max_new_tokens=64,
      num_return_sequences=1
      )

@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 # .env 파일 로드 및 Pinecone 초기화
 load_dotenv()
 
+print(f'api-key : {os.getenv("HUGGINGFACEHUB_API_TOKEN")}')
 
 start_tick = time.time()
 model_name ="beomi/llama-2-ko-7b"
