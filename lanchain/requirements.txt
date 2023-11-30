@@ -12,3 +12,4 @@ Flask
 ctransformers
 bitsandbytes
 scipy
+accelerate
