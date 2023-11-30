@@ -14,8 +14,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 #%% Hugging Face 모델 및 파이프라인 로드
-model_name = os.getenv("HUGGINGFACE_MODEL")
-max_length = int(os.getenv("MAX_LENGTH"))
+# model_name = os.getenv("HUGGINGFACE_MODEL")
+# max_length = int(os.getenv("MAX_LENGTH"))
+model_name = "beomi/llama-2-ko-7b"
 print(f'Start loading {model_name}')
 
 start_tick = time.time()
@@ -33,7 +34,7 @@ hf_pipeline = pipeline(
     # temperature=0.1,
     do_sample=False,
     # device_map="auto" # GPU 상황에 맞게 자동으로 설정
-    device_map="cuda:0"  # GPU 0사용 설정)
+    device_map="auto"  # GPU 0사용 설정)
 )
 
 print(f'Load time: {time.time() - start_tick}')
