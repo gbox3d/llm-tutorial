@@ -32,6 +32,7 @@ hf_pipeline = pipeline(
     max_new_tokens=32,
     # temperature=0.1,
     do_sample=False,
+    # repeat_penalty=1.15,
     # device_map="auto" # GPU 상황에 맞게 자동으로 설정
     device_map="cuda:0"  # GPU 0사용 설정)
 )
@@ -42,6 +43,8 @@ print(f'Load time: {time.time() - start_tick}')
 llm = HuggingFacePipeline(
     pipeline=hf_pipeline
     )
+
+print(f'Load time: {time.time() - start_tick}')
 #%%
 start_tick = time.time()
 print(llm("지구의 위성은 무엇이 있을까요?"))
