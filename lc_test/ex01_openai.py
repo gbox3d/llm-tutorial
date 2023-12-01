@@ -10,9 +10,15 @@ load_dotenv()
 print(f'OpenAI API key: {os.getenv("OPENAI_API_KEY")}')
 
 #%%
+
+model = "gpt-3.5-turbo-1106"
+
+if os.getenv("OPENAI_API_KEY") is not None:
+    model = os.getenv("OPENAI_API_KEY")
+
 llm = OpenAI()
 chat_model = ChatOpenAI(
-    model="gpt-3.5-turbo-1106",
+    model="",
     temperature=0.1
 )
 
