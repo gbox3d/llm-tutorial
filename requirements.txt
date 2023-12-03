@@ -13,3 +13,4 @@ ctransformers
 bitsandbytes
 scipy
 accelerate
+unstructured
