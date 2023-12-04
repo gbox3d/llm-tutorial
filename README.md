@@ -1,1 +1,10 @@
 # llm-tutorial
+
+## .env file
+
+```bash
+OPENAI_API_KEY=YOUR_API_KEY
+OPENAI_MODEL_NAME=YOUR_MODEL_NAME #"gpt-3.5-turbo-1106"
+HUGGINGFACEHUB_API_TOKEN=YOUR_API_TOKEN
+
+```

@@ -4,3 +4,4 @@ stores/
 
 res/*
 !res/*.txt
+__pycache__/
