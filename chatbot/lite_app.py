@@ -52,15 +52,15 @@ class QARequest(BaseModel):
     """Request body for QA."""
     question: str
 @app.post("/qa")
-def qa(body: QARequest):
-    return model.invoke(body.question)
+def qa(_req: QARequest):
+    return model.invoke(_req.question)
 
 # /stream
 class StreamRequest(BaseModel):
     """Request body for streaming."""
     message: str
 @app.post("/stream")
-def stream(body: StreamRequest):
+def stream(_req: StreamRequest):
     
     async def send_message(message: str) -> AsyncIterable[str]:
         callback = AsyncIteratorCallbackHandler()
@@ -91,7 +91,7 @@ def stream(body: StreamRequest):
 
         await task
 
-    return StreamingResponse(send_message(body.message), media_type="text/event-stream")
+    return StreamingResponse(send_message(_req.message), media_type="text/event-stream")
 
 
 if __name__ == "__main__":
