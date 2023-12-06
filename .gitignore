@@ -5,3 +5,4 @@ stores/
 res/*
 !res/*.txt
 __pycache__/
+.DS_Store
