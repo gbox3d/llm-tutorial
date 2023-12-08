@@ -2,6 +2,29 @@ import socket
 import threading
 import time
 
+class ClientThread(threading.Thread):
+    def __init__(self, conn, addr, onPacket, onClose):
+        threading.Thread.__init__(self)
+        self.conn = conn
+        self.addr = addr
+        self.onPacket = onPacket
+        self.onClose = onClose
+
+    def run(self):
+        while True:
+            try:
+                data = self.conn.recv(65535)
+                if not data:
+                    break
+                self.onPacket(self.conn, data, self.addr)
+            except socket.timeout:
+                continue
+            except Exception as ex:
+                print(f'Client thread error: {ex}')
+                break
+        self.onClose(self.conn, self.addr)
+        self.conn.close()
+
 class tcpServerThread(threading.Thread):
     def __init__(self, port, onPacket,onClose,onConnect, Listen_for_incoming_connections=1, timeout=1):
         threading.Thread.__init__(self)
@@ -44,23 +67,25 @@ class tcpServerThread(threading.Thread):
         print(f'Connected by {rinfo}')
 
         self.onConnect(conn, rinfo)
+        client_thread = ClientThread(conn, rinfo, self.onPacket, self.onClose)
+        client_thread.start()
 
-        while not self.termination_requested:
-            try:
-                _data = conn.recv(65535)  # Block until data is received
-                if not _data:
-                    break  # Connection closed
-                self.onPacket(conn,_data, rinfo)
-                # Optionally send data back to the client
-                # conn.sendall(response_data)
+        # while not self.termination_requested:
+        #     try:
+        #         _data = conn.recv(65535)  # Block until data is received
+        #         if not _data:
+        #             break  # Connection closed
+        #         self.onPacket(conn,_data, rinfo)
+        #         # Optionally send data back to the client
+        #         # conn.sendall(response_data)
                 
-            except socket.timeout:
-                continue
-            except Exception as ex:
-                print(f'error : {ex}')
-                break  # Break on any other exception
-        self.onClose(conn, rinfo)
-        conn.close()        
+        #     except socket.timeout:
+        #         continue
+        #     except Exception as ex:
+        #         print(f'error : {ex}')
+        #         break  # Break on any other exception
+        # self.onClose(conn, rinfo)
+        # conn.close()        
         
 
     def terminate(self):

@@ -1,6 +1,6 @@
 #%%
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer,pipeline
+from transformers import AutoTokenizer,pipeline
 
 from tcpThread import tcpServerThread
 
@@ -29,11 +29,8 @@ hf_pipeline = pipeline(
     tokenizer=tokenizer,
     torch_dtype=torch.float16,
     # load_in_8bit=True,
-    # max_length=100, 
-    # max_new_tokens=32,
-    # temperature=0.1,
     do_sample=False,
-    # repeat_penalty=1.15,
+    repeat_penalty=1.15,
     # device_map="auto" # GPU 상황에 맞게 자동으로 설정
     device_map="auto"  # GPU 0사용 설정)
 )
@@ -44,10 +41,10 @@ model = hf_pipeline.model
 
 __version__ = (0,0,1)
 #%%
-def generate_text_interactively(prompt, max_length=1024,conn=None,_checkCode=packetHeaderCheckCode):
+def generate_text_interactively(prompt, max_length=128,conn=None,_checkCode=packetHeaderCheckCode):
     input_ids = tokenizer.encode(prompt, return_tensors="pt").to(model.device)
     generated = input_ids
-    sentences = set()
+    # sentences = set()
     
     if conn != None:
         # conn.sendall("##START##".encode())
@@ -60,6 +57,7 @@ def generate_text_interactively(prompt, max_length=1024,conn=None,_checkCode=pac
     model.eval()
     try :
         with torch.no_grad():
+            _gen_text = ''
             for _ in range(max_length):
                 outputs = model(generated)
                 next_token_logits = outputs.logits[:, -1, :]
@@ -67,28 +65,39 @@ def generate_text_interactively(prompt, max_length=1024,conn=None,_checkCode=pac
                 generated = torch.cat([generated, next_token], dim=-1)
 
                 # 현재까지 생성된 텍스트 확인
-                generated_text = tokenizer.decode(generated[0], skip_special_tokens=True)
+                # generated_text = tokenizer.decode(generated[0], skip_special_tokens=True)
 
                 # 모든 문장 분리
-                current_sentences = set(generated_text.split('.'))
-                if sentences.intersection(current_sentences):
-                    break
-                sentences.update(current_sentences)
+                # current_sentences = set(generated_text.split('.'))
+                # if sentences.intersection(current_sentences):
+                #     print('stop generating text : duplicated sentence : ',current_sentences)
+                #     break
+                # sentences.update(current_sentences)
 
                 # 다음 토큰을 텍스트로 변환하여 출력
                 next_token_text = tokenizer.decode(next_token[0], skip_special_tokens=True)
                 print(next_token_text)
-                _header_packet = pack('<LBBH', packetHeaderCheckCode,0x11,0,len(next_token_text)) # 0x11 : text packet
-                conn.sendall(_header_packet + next_token_text.encode())
-
+                _next_token_data = next_token_text.encode('utf-8')
+                _header_packet = pack('<LBBH', packetHeaderCheckCode,0x11,0,len(_next_token_data)) # 0x11 : text packet
+                conn.sendall(_header_packet + _next_token_data )
+                
+                _gen_text += next_token_text
+                
+                current_sentences = _gen_text.split('.')
+                if len(current_sentences) > 1:
+                    # 마지막 문장이 이전 문잘들과 비교하여 중복되는지 확인
+                    if current_sentences[-1] in current_sentences[:-1]:
+                        print('stop generating text : duplicated sentence : ',current_sentences[-1])
+                        break
+                
+                
                 if next_token.item() == tokenizer.eos_token_id:
                     #end of sentence
-                    _header_packet = pack('<LBBH', packetHeaderCheckCode,0x12,0,len(next_token_text)) # 0x12 : end of sentence packet
-                    # conn.sendall("##FIN##".encode())
-                    conn.sendall(_header_packet + next_token_text.encode())
                     break
+            _header_packet = pack('<LBBH', packetHeaderCheckCode,0x12,0,len(_gen_text)) # 0x12 : end of sentence packet
+            conn.sendall(_header_packet)
 
-        return generated_text
+        return _gen_text
     except Exception as e:
         print(e)
         return None
@@ -146,7 +155,7 @@ _tcpMainIOThread = tcpServerThread(
     onClose=onClose,
     onConnect=onConnect,
     port=int(_port),
-    Listen_for_incoming_connections=1,
+    Listen_for_incoming_connections=10,
     timeout=1
 )
 
@@ -162,7 +171,10 @@ try :
             
             print(f'prompt : {req_data["prompt"]}')
             
-            _gen_text = generate_text_interactively(req_data['prompt'], max_length=64,conn=req_data['conn'])
+            _gen_text = generate_text_interactively(
+                
+                req_data['prompt'],conn=req_data['conn']
+                )
             
             print(f'generated_text : {_gen_text}')
             
