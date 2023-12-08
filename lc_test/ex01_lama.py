@@ -11,7 +11,7 @@ import torch
 from dotenv import load_dotenv
 
 # .env 파일 로드 및 Pinecone 초기화
-load_dotenv()
+load_dotenv('../.env')
 
 #%% Hugging Face 모델 및 파이프라인 로드
 # model_name = os.getenv("HUGGINGFACE_MODEL")
