@@ -11,10 +11,12 @@ packetHeaderCheckCode = 20231208
 
 #%%
 _port = os.getenv('TCP_PORT')
+_host = os.getenv('REMOTE_HOST')
+
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try :
-    client_socket.connect(('localhost', int(_port)))
+    client_socket.connect((_host, int(_port)))
     
     print(f"connect to port {_port}")
     
@@ -31,6 +33,7 @@ try :
             packet = pack('<LBBH',packetHeaderCheckCode,0x10,0,length)
             packet += input_data.encode('utf-8')
             client_socket.sendall(packet)
+            
             
             while True:
                 header_packet = client_socket.recv(1024)
@@ -50,7 +53,9 @@ try :
                         break;
                     elif cmd == 0x10:
                         print('start generate text')
+                        _generated_text = ''
                         while True:
+                            
                             _data = client_socket.recv(1024)
                             if len(_data) < 8:
                                 _data += client_socket.recv(8 - len(_data))
@@ -61,30 +66,24 @@ try :
                                 break
                             else:
                                 if cmd == 0x11:
-                                    length  = unpack("<H",header_packet[6:8])[0]
-                                    prompt = b''
-                                    if len(header_packet) > 8:
-                                        prompt = header_packet[8:]
+                                    length  = unpack("<H",_data[6:8])[0]
+                                    _next_token = _data[8:]
                                         
-                                    while len(prompt) < length:
-                                        prompt += client_socket.recv(length - len(prompt))
+                                    while len(_next_token) < length:
+                                        _next_token += client_socket.recv(length - len(_next_token))
                                         
-                                    prompt = prompt.decode('utf-8')
-                                    print(f'generated text : {prompt}')
-                                    break;
+                                    _next_token_text = _next_token.decode('utf-8')
+                                    print(f'generated text : {_next_token_text}')
+                                    _generated_text += _next_token_text
                                 elif cmd == 0x12:
                                     print('end generate text')
                                     break;
+                                
+                        print(f'generate text : {_generated_text}')
+                        break;
+                        
                     
-        # else :
-        #     length = len(input_data)
-        #     packet = pack('<LBBH',packetHeaderCheckCode,0x11,0,length)
-        #     packet += input_data.encode('utf-8')
-        #     client_socket.sendall(packet)
-    
-    
-    # data = client_socket.recv(1024)
-    # print('Received', repr(data.decode()))
+        
 except Exception as ex:
     print(ex)
 finally:
