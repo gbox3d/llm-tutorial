@@ -4,6 +4,7 @@ stores/
 
 res/*
 !res/*.txt
+!res/*.csv
 __pycache__/
 .DS_Store
 temp/
