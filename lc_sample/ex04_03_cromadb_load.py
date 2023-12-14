@@ -27,7 +27,7 @@ chroma_store = Chroma(
 _retriever = chroma_store.as_retriever()
 
 #%%
-contents = _retriever.invoke('전주')
+contents = _retriever.invoke('임실')
 
 for content in contents:
     print(content)
