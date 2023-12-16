@@ -17,3 +17,5 @@ unstructured
 fastapi
 pydantic
 streamlit
+unstructured[pdf]
+faiss-gpu

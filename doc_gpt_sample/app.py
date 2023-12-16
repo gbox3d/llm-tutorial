@@ -124,9 +124,9 @@ with st.sidebar:
 
 if file:
     retriever = embed_file(file)
-    send_message("I'm ready! Ask away!", "ai", save=False)
+    send_message("무엇을 도와드릴까요?", "ai", save=False)
     paint_history()
-    message = st.chat_input("Ask anything about your file...")
+    message = st.chat_input("질문하세요")
     if message:
         send_message(message, "human")
         chain = (
