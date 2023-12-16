@@ -16,3 +16,4 @@ accelerate
 unstructured
 fastapi
 pydantic
+streamlit
