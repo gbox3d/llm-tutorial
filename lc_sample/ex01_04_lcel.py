@@ -13,6 +13,7 @@ chat = ChatOpenAI(temperature=0.8)
 #%%
 class CommaOutputParser(BaseOutputParser):
     def parse(self, text):
+        print("Data passing from llm to parser:", text)
         items = text.strip().split(",")
         return list(map(str.strip, items))
     
@@ -47,9 +48,15 @@ print(f'elapsed time: {time.time() - start_tick}')
 print(answer)
 p.parse(answer.content)
 
+#%%
+
+def print_step(x):
+    print("Data passing from prompt to llm:", x)
+    return x
+
 # %%
 start_tick = time.time()
-chain = templete | chat | CommaOutputParser()
+chain = templete | chat | print_step | CommaOutputParser()
 
 answer = chain.invoke({
     "max_items": 5,
