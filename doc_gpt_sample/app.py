@@ -94,8 +94,9 @@ prompt = ChatPromptTemplate.from_messages(
             "system",
             """
             Answer the question using ONLY the following context. If you don't know the answer just say you don't know. DON'T make anything up.
-            
+            ++++++++++++++++++++++++++++++++
             Context: {context}
+            ++++++++++++++++++++++++++++++++
             """,
         ),
         ("human", "{question}"),
@@ -121,22 +122,32 @@ with st.sidebar:
         "Upload a .txt .pdf or .docx file",
         type=["pdf", "txt", "docx"],
     )
+    instructions = st.text_area("Instructions", height=200)
+
+# 인자를 받아서 그대로 반환하는 람다 함수
+instructions_lambda = lambda x: instructions
 
 if file:
     retriever = embed_file(file)
     send_message("무엇을 도와드릴까요?", "ai", save=False)
     paint_history()
     message = st.chat_input("질문하세요")
-    if message:
+    
+    if message :
         send_message(message, "human")
         chain = (
             {
+                "instructions": RunnableLambda(instructions_lambda),
                 "context": retriever | RunnableLambda(format_docs),
                 "question": RunnablePassthrough(),
             }
             | prompt
             | llm
         )
+        
+        print(prompt)
+        
+        
         with st.chat_message("ai"):
             chain.invoke(message)
 
