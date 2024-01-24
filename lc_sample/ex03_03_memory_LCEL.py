@@ -1,9 +1,10 @@
 #%%
 from langchain.memory import ConversationSummaryBufferMemory
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.callbacks import StreamingStdOutCallbackHandler
+from langchain_core.runnables import RunnableLambda
 
 
 import time
@@ -32,11 +33,16 @@ prompt = ChatPromptTemplate.from_messages(
 )
 
 
+def log_chain(x):
+    print(x) # 이전 단계에서 넘어온 데이터를 확인할 수 있다.
+    return x
+
 def load_memory(_):
     return memory.load_memory_variables({})["history"]
 
+rbLogChain = RunnableLambda(log_chain)
 
-chain = RunnablePassthrough.assign(history=load_memory) | prompt | llm
+chain = RunnablePassthrough.assign(history=load_memory) |rbLogChain | prompt | llm
 
 
 def invoke_chain(question):
@@ -54,6 +60,9 @@ result = invoke_chain("여기 딸기가 3개있습니다.")
 result = invoke_chain("하나를 먹었습니다.")
 
 # %%
-invoke_chain("지금 딸기가 몇개 남았습니까?")
+result = invoke_chain("지금 딸기가 몇개 남았습니까?")
+
 # %%
 load_memory({})
+
+# %%
