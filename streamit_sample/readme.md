@@ -28,4 +28,13 @@ launch.json 에 아래 내용 추가
     "justMyCode": true
 }
 ```
-        
+
+## upload issue
+
+macosx 에서 로컬 파일을 업로드 할 때, 403에러가 발생 하면 config.toml 파일에 아래 내용 추가  
+
+```toml
+[server]
+enableCORS = false
+enableXsrfProtection = false
+```
