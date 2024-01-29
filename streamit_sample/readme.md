@@ -25,7 +25,8 @@ launch.json 에 아래 내용 추가
         "--verbose"
     ],
     "console": "integratedTerminal",
-    "justMyCode": true
+    "justMyCode": true,
+    "cwd": "${fileDirname}"
 }
 ```
 
