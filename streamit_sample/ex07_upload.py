@@ -47,7 +47,7 @@ if st.button("save file") :
     
 else :
     #업로드 할 파일 준비 
-    uploaded_files = st.file_uploader("Choose a CSV file", accept_multiple_files=True)
+    uploaded_files = st.file_uploader("Choose a CSV file to upload", accept_multiple_files=True)
 
     if uploaded_files is not None:
         st.session_state.files = uploaded_files
