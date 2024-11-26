@@ -10,3 +10,6 @@ __pycache__/
 temp/
 .cache/
 .streamlit/
+
+.venv/
+venv/
