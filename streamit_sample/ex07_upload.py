@@ -26,6 +26,7 @@ if st.button("save file") :
         with open(file_path, "wb") as f:
             f.write(file_content)
             
+            
     if st.button("Delete"):
         for i in range(len(check_list) - 1, -1, -1):
             check = check_list[i]
@@ -43,7 +44,10 @@ if st.button("save file") :
         files = os.listdir(base_path)
         for file in files:
             st.session_state.check_list.append( (st.checkbox(f"{file}"), file))
+            
     
+    if st.button("Refresh"):
+        pass
     
 else :
     #업로드 할 파일 준비 
