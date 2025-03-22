@@ -1,0 +1,21 @@
+###
+GET http://localhost:11434
+
+### Get all tags
+GET http://localhost:11434/api/tags
+
+### ollama generate
+POST https://ailab.miso.center:22244/api/generate
+Content-Type: application/json
+
+{
+    "model": "exaone3.5:2.4b",
+    "prompt": "당신은 누구입니까?",
+    "stream": false
+}
+
+### ollama pull
+POST http://localhost:22244/api/pull
+Content-Type: application/json
+
+{"name": "exaone3.5:2.4b"}
