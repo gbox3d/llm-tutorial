@@ -11,7 +11,7 @@ temp/
 .cache/
 .streamlit/
 
-.venv/
-venv/
+.venv*
+
 
 .vscode/

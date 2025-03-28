@@ -1,6 +1,9 @@
 ###
 GET http://localhost:11434
 
+###
+GET http://localhost:11434/api/version
+
 ### Get all tags
 GET http://localhost:11434/api/tags
 
