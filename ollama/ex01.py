@@ -2,7 +2,7 @@
 import ollama
 from ollama import ListResponse, list
 
-
+print('Ollama Python Client Example')
 #%%
 response: ListResponse = list()
 
