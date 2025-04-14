@@ -11,11 +11,9 @@ Ollama 채팅 스크립트 (객체지향 개선 버전)
 - 긴 대화 자동 요약 및 메모리 관리
 """
 import argparse
-import sys
 from pathlib import Path
 
 from ollama_chat import OllamaChat
-from chat_memory import ChatMemory
 
 
 def parse_arguments():
@@ -59,6 +57,10 @@ def main():
         temperature=args.temperature,
         params=params
     )
+    
+    # 프롬프트 파일 적용 (가장 먼저 적용)
+    if args.prompt:
+        chat.memory.load_prompt_from_file(args.prompt, mode=args.prompt_mode)
     
     # 저장된 대화 불러오기 (명령줄 인수로 지정된 경우)
     if args.load:
