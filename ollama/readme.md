@@ -10,7 +10,7 @@ https://ollama.com/download
 ollama list
 ollama run exaone3.5:2.4b
 
-ollama serve
+ollama serve # 우분투의 경우는 자동 실행됨
 
 
 
