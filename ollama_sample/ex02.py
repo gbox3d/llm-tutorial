@@ -16,20 +16,26 @@ from ollama import ListResponse
 
 #%%
 host_url = 'http://localhost:11434'
+MODEL_NAME = "gemma3:12b" 
+
 
 #%%
 client = Client(
   host=host_url,
   # headers={'x-some-header': 'some-value'}
 )
-response = client.chat(model='exaone3.5:2.4b', messages=[
+response = client.chat(model=MODEL_NAME, 
+                       messages=[
   {
     'role': 'user',
-    'content': 'Why is the sky blue?',
+    'content': '하늘은 무슨색이야? 짧고 간단하게 색만 알려줘',
   },
 ])
 # %%
 print(response)
+
+#%%
+print(response.message.content)
 # %%
 
 response: ListResponse = client.list()
