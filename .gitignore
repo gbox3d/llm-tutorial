@@ -10,8 +10,5 @@ __pycache__/
 temp/
 .cache/
 .streamlit/
-
 .venv*/
-
-
-.vscode/
+ollama/
